@@ -5,7 +5,7 @@ local SayRE = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSyst
 local arguments = {[1] = "INFILTRATION LOADED. AUTOMATIC BEAST-KICKER ENABLED.", [2] = "All"}
 --SayRE:FireServer(unpack(arguments))
 task.wait()
-arguments[1] = "MADE BY ANONYMOUS."
+arguments[1] = "MADE BY nigglit"
 --SayRE:FireServer(unpack(arguments))
 function saysomething(messagethingy)
 	arguments[1] = messagethingy
