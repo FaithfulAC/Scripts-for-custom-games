@@ -1,1 +1,1 @@
-loadstring(game:HttpGet('https://pastebin.com/raw/gHXG00qB'))() -- self made prison life woohoo
+
