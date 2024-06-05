@@ -1,7 +1,5 @@
 -- beta, there will be no gui until functions are sorted out
 
--- beta, there will be no gui until functions are sorted out
-
 repeat task.wait() until game:IsLoaded()
 
 -- ty reddit (https://www.reddit.com/r/ROBLOXExploiting/comments/tozlok/manipluating_proximity_prompts/)
@@ -229,26 +227,28 @@ local function AutoBuyButtons(bool)
     end
 end
 
-AutoBuyButtons()
-
 local DefaultHighlight = Instance.new("Highlight")
 DefaultHighlight.Name = "NAT_SHOW_AVAILABLE"
 DefaultHighlight.FillColor = Color3.fromRGB(10, 255, 10)
 DefaultHighlight.FillTransparency = 0.3
+DefaultHighlight.OutlineTransparency = 0.7
 
 local function ShowBuyableButtons(bool)
     local Models = MyTycoon:FindFirstChild("Models")
     local Character = LocalPlayer.Character
     local Root = Character:WaitForChild("HumanoidRootPart")
     local TotalCash = leaderstats.Money.Value
+    local TotalResearch = leaderstats["Research Points"].Value
 
     if bool then
         for i, v in pairs(Models:GetDescendants()) do
             if v.ClassName == "MeshPart" and v.Name == "Button" and v.Transparency == 0 then
                 local HostModel = v.Parent
-                local Price, Bought = HostModel.Stats.Price, HostModel.Stats.Buy
+                local Price, Bought = HostModel.Stats.Price.Value, HostModel.Stats.Buy.Value
+                local RPoints = HostModel.Stats:FindFirstChild("Research")
+                if RPoints then RPoints = RPoints.Value end
 
-                if (not Bought) and Price <= TotalCash then
+                if (not Bought) and Price <= TotalCash and ((RPoints and RPoints <= TotalResearch) or true) then
                     Instance.fromExisting(DefaultHighlight).Parent = v
                 end
             end
@@ -261,6 +261,7 @@ local function ShowBuyableButtons(bool)
         end
     end
 end
+ShowBuyableButtons(false)
 
 local function AntiWaterKill()
     local BadStuff = {}
