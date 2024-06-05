@@ -54,6 +54,26 @@ local function ToObbyLand()
     Target:InvokeServer("ObbyLand")
 end
 
+local function ToMyTycoon()
+    -- just in case the character is somewhere else
+    local Target = Remotes:FindFirstChild("TaxiBoat")
+    Target:InvokeServer(LocalPlayer.Name)
+
+    local Character = LocalPlayer.Character
+    local RootPart = Character:WaitForChild("HumanoidRootPart")
+    local Spawn do
+        repeat
+            Spawn = MyTycoon:FindFirstChild("FalseSpawn", true)
+            task.wait()
+        until Spawn
+    end
+
+    repeat
+        RootPart.CFrame = Spawn.CFrame * CFrame.new(0, 3, 0)
+        task.wait()
+    until math.abs(RootPart.Position.Magnitude - Spawn.Position.Magnitude) < 10
+end
+
 local function AntiWaterKill()
     local BadStuff = {}
 
