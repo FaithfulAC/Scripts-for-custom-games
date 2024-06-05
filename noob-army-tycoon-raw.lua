@@ -165,7 +165,7 @@ local function SetAutoFarm2(bool)
             if not getgenv().AutoFarm2 then break end
             fireproximityprompt(pp2)
 
-            task.wait(.1)
+            task.wait(.5)
         end
     else
         ToMyTycoon()
