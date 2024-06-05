@@ -25,6 +25,7 @@ end
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
+local leaderstats = LocalPlayer:WaitForChild("leaderstats")
 local PlayerScripts = LocalPlayer.PlayerScripts
 local PlayerGui = LocalPlayer.PlayerGui
 
@@ -170,7 +171,74 @@ local function SetAutoFarm2(bool)
         ToMyTycoon()
     end
 end
-SetAutoFarm2(true)
+
+getgenv().LoopAutoBuy = false
+
+local function AutoBuyButtons(bool)
+    local Models = MyTycoon:FindFirstChild("Models")
+    local Character = LocalPlayer.Character
+    local Root = Character:WaitForChild("HumanoidRootPart")
+    local TotalCash = leaderstats.Money.Value
+
+    local main = function()
+        for i, v in pairs(Models:GetDescendants()) do
+            if v.ClassName == "MeshPart" and v.Name == "Button" and v.Transparency == 0 then
+                local HostModel = v.Parent
+                local Price, Bought = HostModel.Stats.Price, HostModel.Stats.Buy
+
+                if (not Bought) and Price <= TotalCash then
+                    Root.CFrame = v.CFrame * CFrame.new(0, 3, 0)
+                    task.wait()
+                    fireproximityprompt(v:FindFirstChild("ProximityPrompt"))
+                    task.wait(.05)
+                    TotalCash = leaderstats.Money.Value
+                end
+            end
+        end
+    end
+
+    -- convert to bool
+    getgenv().LoopAutoBuy = not (not bool)
+
+    if bool then
+        while getgenv().LoopAutoBuy and task.wait(1) do
+            main()
+        end
+    else
+        main()
+    end
+end
+
+local DefaultHighlight = Instance.new("Highlight")
+DefaultHighlight.Name = "NAT_SHOW_AVAILABLE"
+DefaultHighlight.FillColor = Color3.fromRGB(10, 255, 10)
+DefaultHighlight.FillTransparency = 0.3
+
+local function ShowBuyableButtons(bool)
+    local Models = MyTycoon:FindFirstChild("Models")
+    local Character = LocalPlayer.Character
+    local Root = Character:WaitForChild("HumanoidRootPart")
+    local TotalCash = leaderstats.Money.Value
+
+    if bool then
+        for i, v in pairs(Models:GetDescendants()) do
+            if v.ClassName == "MeshPart" and v.Name == "Button" and v.Transparency == 0 then
+                local HostModel = v.Parent
+                local Price, Bought = HostModel.Stats.Price, HostModel.Stats.Buy
+
+                if (not Bought) and Price <= TotalCash then
+                    Instance.fromExisting(DefaultHighlight).Parent = v
+                end
+            end
+        end
+    else
+        for i, v in pairs(Models:GetDescendants()) do
+            if v.Name == "NAT_SHOW_AVAILABLE" and v:IsA("Highlight") then
+                v:Destroy()
+            end
+        end
+    end
+end
 
 local function AntiWaterKill()
     local BadStuff = {}
