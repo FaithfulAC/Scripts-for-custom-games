@@ -1,5 +1,7 @@
 -- beta, there will be no gui until functions are sorted out
 
+-- beta, there will be no gui until functions are sorted out
+
 repeat task.wait() until game:IsLoaded()
 
 -- ty reddit (https://www.reddit.com/r/ROBLOXExploiting/comments/tozlok/manipluating_proximity_prompts/)
@@ -179,19 +181,37 @@ local function AutoBuyButtons(bool)
     local Character = LocalPlayer.Character
     local Root = Character:WaitForChild("HumanoidRootPart")
     local TotalCash = leaderstats.Money.Value
+    local TotalResearch = leaderstats["Research Points"].Value
 
     local main = function()
         for i, v in pairs(Models:GetDescendants()) do
-            if v.ClassName == "MeshPart" and v.Name == "Button" and v.Color == Color3.fromRGB(0, 255, 0) and v.Transparency == 0 then
+            if v.ClassName == "MeshPart" and v.Name == "Button" and v.Transparency == 0 then
                 local HostModel = v.Parent
                 local Price, Bought = HostModel.Stats.Price.Value, HostModel.Stats.Buy.Value
+                local RPoints = HostModel.Stats:FindFirstChild("Research")
+                if RPoints then RPoints = RPoints.Value end
 
-                if (not Bought) and Price <= TotalCash then
+                local MoneyOnly = {
+                    BrickColor.new("Lime green")
+                }
+                local MoneyAndResearch = {
+                    BrickColor.new("Cyan"),
+                    BrickColor.new("Toothpaste"),
+                    BrickColor.new("Bright bluish green"),
+                    BrickColor.new("Teal")
+                }
+
+                if (not Bought) and ((
+                    table.find(MoneyOnly, v.BrickColor) and Price <= TotalCash
+                ) or (
+                    table.find(MoneyAndResearch, v.BrickColor) and (Price <= TotalCash and RPoints <= TotalResearch)
+                )) then
                     Root.CFrame = v.CFrame * CFrame.new(0, 3, 0)
                     task.wait(.2)
                     fireproximityprompt(v:FindFirstChild("ProximityPrompt"))
                     task.wait(.05)
                     TotalCash = leaderstats.Money.Value
+                    TotalResearch = leaderstats["Research Points"].Value
                 end
             end
         end
