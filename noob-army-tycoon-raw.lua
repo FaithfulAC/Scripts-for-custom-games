@@ -5,6 +5,8 @@ repeat task.wait() until game:IsLoaded()
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
+local PlayerScripts = LocalPlayer.PlayerScripts
+local PlayerGui = LocalPlayer.PlayerGui
 
 local Map = workspace:FindFirstChild("Map") or workspace:WaitForChild("Map")
 local Points = Map.Points
@@ -100,9 +102,10 @@ local function AntiLavaKill()
 end
 
 local function SetMotionBlur(bool)
-    
+    if not PlayerScripts:FindFirstChild("MotionBlur") then return end
+    PlayerScripts.MotionBlur.Enabled = bool
 end
 
-for i, a in pairs(GetMyTroops()) do
-    a.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
+if MyTycoon.Models:FindFirstChild("Computer") then
+    print(MyTycoon.Models.Computer.Model:FindFirstChild("ProximityPrompt", true))
 end
