@@ -48,14 +48,22 @@ local function GetInviteFriendBadge()
 end
 
 local function AntiWaterKill()
-    local Water = Map:FindFirstChild("Water")
-    if not Water then return end
+    local BadStuff = {}
 
-    local Replacement = Instance.fromExisting(Water)
-    Replacement.Parent = Map
-    Replacement.Position += Vector3.new(0, 4, 0)
-    Replacement.CanCollide = true
-    Water:Destroy()
+    for i, v in pairs(Map:GetChildren()) do
+        if v:IsA("Part") and (v.Name == "Rock" or v.Name == "Water") then
+            table.insert(BadStuff, v)
+        end
+    end
+
+    for i, part in pairs(BadStuff) do
+        local Replacement = Instance.fromExisting(part)
+        Replacement.Parent = Map
+        Replacement.Position += Vector3.new(0, 1, 0)
+        Replacement.Color = Color3.fromRGB(0, 255, 0)
+        Replacement.CanCollide = true
+        part:Destroy()
+    end
 end
 
 local function RemoveDirtDigPart()
