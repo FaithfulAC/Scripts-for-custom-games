@@ -36,7 +36,7 @@ local function GetMyTroops()
     local tbl = {}
 
     for i, v in pairs(NPCs:GetChildren()) do
-        if v.Tycoon.Value == MyTycoon then
+        if v:FindFirstChild("Tycoon") and v.Tycoon.Value == MyTycoon then
             table.insert(tbl, v)
         end
     end
@@ -72,6 +72,23 @@ local function ToMyTycoon()
         RootPart.CFrame = Spawn.CFrame * CFrame.new(0, 3, 0)
         task.wait()
     until math.abs(RootPart.Position.Magnitude - Spawn.Position.Magnitude) < 10
+end
+
+local function RespawnArmy()
+    local Target = Remotes:FindFirstChild("RespawnArmy")
+    Target:FireServer()
+end
+
+local function GetOwnershipOfArmy()
+    if not (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")) then return end
+    local Root = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+    for i, v in pairs(GetMyTroops()) do
+        if not v:FindFirstChild("HumanoidRootPart") then continue end
+        Root.CFrame = v:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0, 2, 0)
+        Root.Velocity = Vector3.zero
+        task.wait(.01)
+    end
 end
 
 local function AntiWaterKill()
