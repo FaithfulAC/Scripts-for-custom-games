@@ -49,6 +49,11 @@ local function GetInviteFriendBadge()
     Target:FireServer()
 end
 
+local function ToObbyLand()
+    local Target = Remotes:FindFirstChild("TaxiBoat")
+    Target:InvokeServer("ObbyLand")
+end
+
 local function AntiWaterKill()
     local BadStuff = {}
 
