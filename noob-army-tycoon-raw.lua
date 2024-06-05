@@ -134,6 +134,44 @@ local function SetAutoFarm1(bool)
     end
 end
 
+local function SetAutoFarm2(bool)
+    getgenv().AutoFarm2 = bool
+
+    if bool then
+        ToObbyLand()
+        repeat task.wait() until ObbyLand:FindFirstChild("Teleporters")
+        local TheBigBoy = ObbyLand.Teleporters:WaitForChild("11")
+        local pp = TheBigBoy:FindFirstChild("ProximityPrompt")
+
+        local TheBigBoy2 = ObbyLand.Finish:WaitForChild("11")
+        local pp2 = TheBigBoy2:FindFirstChild("ProximityPrompt")
+
+        local Character = LocalPlayer.Character
+        local Root = Character:WaitForChild("HumanoidRootPart")
+
+        while getgenv().AutoFarm2 do
+            Root.CFrame = TheBigBoy.CFrame * CFrame.new(0, 0, 2)
+
+            task.wait(.1)
+            if not getgenv().AutoFarm2 then break end
+            fireproximityprompt(pp)
+
+            task.wait(6)
+            if not getgenv().AutoFarm2 then break end
+            Root.CFrame = TheBigBoy2.CFrame * CFrame.new(0, 3, 0)
+
+            task.wait(.1)
+            if not getgenv().AutoFarm2 then break end
+            fireproximityprompt(pp2)
+
+            task.wait(.1)
+        end
+    else
+        ToMyTycoon()
+    end
+end
+SetAutoFarm2(true)
+
 local function AntiWaterKill()
     local BadStuff = {}
 
