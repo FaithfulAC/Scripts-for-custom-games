@@ -2,6 +2,26 @@
 
 repeat task.wait() until game:IsLoaded()
 
+-- ty reddit (https://www.reddit.com/r/ROBLOXExploiting/comments/tozlok/manipluating_proximity_prompts/)
+local fireproximityprompt = function(Obj, Amount)
+    if Obj.ClassName == "ProximityPrompt" then
+        Amount = Amount or 1
+        local PromptTime = Obj.HoldDuration
+
+        for i = 1, Amount do
+            Obj:InputHoldBegin()
+            if not Skip then
+                task.wait(Obj.HoldDuration)
+            end
+            Obj:InputHoldEnd()
+        end
+
+        Obj.HoldDuration = PromptTime
+    else
+        error("userdata<ProximityPrompt> expected", 0)
+    end
+end
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
@@ -91,6 +111,29 @@ local function GetOwnershipOfArmy()
     end
 end
 
+if AutoFarm1 == nil or AutoFarm2 == nil then
+    getgenv().AutoFarm1, getgenv().AutoFarm2 = false, false
+end
+
+local function SetAutoFarm1(bool)
+    if not MyTycoon.Models:FindFirstChild("Computer") then
+        return
+    end
+
+    local pp = MyTycoon.Models.Computer.Model:FindFirstChild("ProximityPrompt", true)
+    local Character = LocalPlayer.Character
+    local Root = Character:FindFirstChild("HumanoidRootPart")
+
+    getgenv().AutoFarm1 = bool
+
+    while getgenv().AutoFarm1 do
+        pcall(function()
+            Root.CFrame = pp.Parent.CFrame * CFrame.new(0, 3, 0)
+            fireproximityprompt(pp)
+        end)
+    end
+end
+
 local function AntiWaterKill()
     local BadStuff = {}
 
@@ -146,8 +189,4 @@ end
 local function SetMotionBlur(bool)
     if not PlayerScripts:FindFirstChild("MotionBlur") then return end
     PlayerScripts.MotionBlur.Enabled = bool
-end
-
-if MyTycoon.Models:FindFirstChild("Computer") then
-    print(MyTycoon.Models.Computer.Model:FindFirstChild("ProximityPrompt", true))
 end
