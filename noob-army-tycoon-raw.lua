@@ -182,13 +182,13 @@ local function AutoBuyButtons(bool)
 
     local main = function()
         for i, v in pairs(Models:GetDescendants()) do
-            if v.ClassName == "MeshPart" and v.Name == "Button" and v.Transparency == 0 then
+            if v.ClassName == "MeshPart" and v.Name == "Button" and v.Color == Color3.fromRGB(0, 255, 0) and v.Transparency == 0 then
                 local HostModel = v.Parent
-                local Price, Bought = HostModel.Stats.Price, HostModel.Stats.Buy
+                local Price, Bought = HostModel.Stats.Price.Value, HostModel.Stats.Buy.Value
 
                 if (not Bought) and Price <= TotalCash then
                     Root.CFrame = v.CFrame * CFrame.new(0, 3, 0)
-                    task.wait()
+                    task.wait(.2)
                     fireproximityprompt(v:FindFirstChild("ProximityPrompt"))
                     task.wait(.05)
                     TotalCash = leaderstats.Money.Value
@@ -208,6 +208,8 @@ local function AutoBuyButtons(bool)
         main()
     end
 end
+
+AutoBuyButtons()
 
 local DefaultHighlight = Instance.new("Highlight")
 DefaultHighlight.Name = "NAT_SHOW_AVAILABLE"
