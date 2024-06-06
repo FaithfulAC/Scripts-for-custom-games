@@ -10,17 +10,15 @@ local fireproximityprompt = function(Obj, Amount, Skip)
         
         local PropertyChanged;
         if Skip then
-            Obj.HoldDuration = 0
+            Obj.HoldDuration = 0.01
             PropertyChanged = Obj:GetPropertyChangedSignal("HoldDuration"):Connect(function()
-                Obj.HoldDuration = 0
+                Obj.HoldDuration = 0.01
             end)
         end
 
         for i = 1, Amount do
             Obj:InputHoldBegin()
-            if not Skip then
-                task.wait(Obj.HoldDuration)
-            end
+            task.wait(Obj.HoldDuration)
             Obj:InputHoldEnd()
         end
 
@@ -65,6 +63,21 @@ local MyTycoon do
     end
 end
 
+function ReplaceCameraAndDoStuff(func, org)
+    local cam = workspace.Camera
+    local Original = org or cam.CameraSubject
+
+    local Part = Instance.new("Part", workspace)
+    Part.Transparency = 1
+    Part.Anchored = true
+    Part.CanCollide = false
+    Part.CFrame = LocalPlayer.Character:FindFirstChild("Head").CFrame
+    cam.CameraSubject = Part
+    func(Part)
+
+    cam.CameraSubject = Original
+end
+
 local function GetMyTroops()
     local tbl = {}
 
@@ -106,6 +119,40 @@ local function ToMyTycoon()
         task.wait()
     until math.abs(RootPart.Position.Magnitude - Spawn.Position.Magnitude) < 10
 end
+
+local function GetTycoonCompletion()
+    local TycComp = MyTycoon.Models:FindFirstChild("Tycoon Completer")
+    local Model = TycComp:FindFirstChild("Model")
+    if not Model then return print("?") end
+
+    local pp, Label = Model:FindFirstChild("ProximityPrompt", true), Model:FindFirstChild("Percent", true)
+    local button = pp.Parent
+    if not (pp and Label) then return print("?") end
+
+    local Conn;
+    local Percent;
+
+    ReplaceCameraAndDoStuff(function(part)
+        local Character = LocalPlayer.Character
+        local Root = Character:FindFirstChild("HumanoidRootPart")
+
+        Root.CFrame = button.CFrame * CFrame.new(0, 0, 2)
+        Conn = Label:GetPropertyChangedSignal("Text"):Connect(function()
+            Percent = Label.Text
+            Conn:Disconnect()
+            Conn = nil
+        end)
+        task.wait(.1)
+        fireproximityprompt(pp)
+        task.wait()
+        Root.CFrame = part.CFrame
+    end)
+
+    task.wait(1)
+    if not Percent then Percent = Label.Text end
+    print(Percent)
+end
+GetTycoonCompletion()
 
 local function RespawnArmy()
     local Target = Remotes:FindFirstChild("RespawnArmy")
