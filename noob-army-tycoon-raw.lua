@@ -3,10 +3,18 @@
 repeat task.wait() until game:IsLoaded()
 
 -- ty reddit (https://www.reddit.com/r/ROBLOXExploiting/comments/tozlok/manipluating_proximity_prompts/)
-local fireproximityprompt = function(Obj, Amount)
+local fireproximityprompt = function(Obj, Amount, Skip)
     if Obj.ClassName == "ProximityPrompt" then
         Amount = Amount or 1
         local PromptTime = Obj.HoldDuration
+        
+        local PropertyChanged;
+        if Skip then
+            Obj.HoldDuration = 0
+            PropertyChanged = Obj:GetPropertyChangedSignal("HoldDuration"):Connect(function()
+                Obj.HoldDuration = 0
+            end)
+        end
 
         for i = 1, Amount do
             Obj:InputHoldBegin()
@@ -16,6 +24,10 @@ local fireproximityprompt = function(Obj, Amount)
             Obj:InputHoldEnd()
         end
 
+        if PropertyChanged then
+            PropertyChanged:Disconnect()
+            PropertyChanged = nil
+        end
         Obj.HoldDuration = PromptTime
     else
         error("userdata<ProximityPrompt> expected", 0)
