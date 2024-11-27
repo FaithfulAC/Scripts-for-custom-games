@@ -2,7 +2,7 @@ _G.DodgeballAutoFarm = true
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local Connection = game:GetService("ReplicatedStorage").Connection
+local Connection = game:GetService("ReplicatedStorage"):WaitForChild("Connection")
 
 while task.wait(.5) do
     if not _G.DodgeballAutoFarm then continue end
