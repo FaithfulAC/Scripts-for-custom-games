@@ -12,7 +12,7 @@ while task.wait(.5) do
 
         if math.random(5) == 5 then
             for i, v in pairs(workspace:GetChildren()) do
-        if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(196, 40, 28) then
+                if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(196, 40, 28) then
                     dub += 1
                     if dub > 9 then continue end
                     firetouchinterest(root, v, 0)
