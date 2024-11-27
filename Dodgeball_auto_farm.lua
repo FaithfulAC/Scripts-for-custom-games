@@ -9,13 +9,14 @@ while task.wait(.25) do
 
     pcall(function()
         local root = LocalPlayer.Character.HumanoidRootPart
+        local dub = 0
 
-        if math.random(2) == 2 then
+        if math.random(3) == 3 then
             for i, v in pairs(workspace:GetChildren()) do
                 if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(196, 40, 28) then
                     dub += 1
                     if dub > 9 then continue end
-                    print(pcall(firetouchinterest, root, v, 0))
+                    pcall(firetouchinterest, root, v, 0)
                     task.wait()
                 end
             end
