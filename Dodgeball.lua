@@ -574,7 +574,7 @@ local function main() -- ButtonHolder.Manager
 	local script = Instance.new('LocalScript', ButtonHolder)
 
 	-- vital functions
-	
+
 	local getconnections = getconnections or nil
 	local queue_on_teleport = queue_on_teleport or nil
 	local firesignal = firesignal or (getconnections and function(a, ...) for i, v in next, getconnections(a) do v.Function(...) end end) or nil
@@ -583,21 +583,21 @@ local function main() -- ButtonHolder.Manager
 			return nil; -- this fti implementation will only operate on 0 because it already does a TouchEnded firing
 		end
 		-- getconnections implementation or touchinterest parenting implementation
-	
+
 		if getconnections then
 			for i, v in next, getconnections(opart.Touched) do
 				firesignal(v, part)
 			end
-	
+
 			for i, v in next, getconnections(opart.TouchEnded) do
 				firesignal(v, part)
 			end
 		else
 			local garbage = Instance.new("Part", workspace)
-	
+
 			garbage.Transparency, garbage.CanCollide, garbage.Anchored, garbage.Size = 1, false, true, Vector3.new(1,1,1)
 			garbage.Name = math.random() -- auto tostring so doesnt matter :sunglasses:
-	
+
 			local interest = opart:FindFirstChildWhichIsA("TouchInterest")
 			if interest then
 				-- touchinterest thing
@@ -605,7 +605,7 @@ local function main() -- ButtonHolder.Manager
 				for i = 1, 3 do
 					garbage.CFrame = part.CFrame
 				end
-	
+
 				task.wait()
 				interest.Parent = opart.Parent
 				garbage:Destroy()
@@ -615,15 +615,15 @@ local function main() -- ButtonHolder.Manager
 				for i = 1, 10 do
 					opart.CFrame = part.CFrame
 				end
-	
+
 				for i = 1, 1000 do end
 				opart.CFrame = org
 			end
 		end
 	end
-	
+
 	-- variables
-	
+
 	local Players = game:GetService("Players")
 	local CoreGui = game:GetService("CoreGui")
 	local RunService = game:GetService("RunService")
@@ -633,12 +633,12 @@ local function main() -- ButtonHolder.Manager
 	local TweenService = game:GetService("TweenService")
 	local LocalPlayer = Players.LocalPlayer
 	local Mouse = LocalPlayer:GetMouse()
-	
+
 	local Storage = Instance.new("Folder")
 	local Connection = ReplicatedStorage:WaitForChild("Connection")
 	local CertzIntValue = ReplicatedStorage:WaitForChild("Config").Players[LocalPlayer.Name].Certz
 	local TimeLeftIntValue = ReplicatedStorage:WaitForChild("Config").Game.TimeLeft
-	
+
 	local ButtonHolder = script.Parent
 	local ScrollingFrame = ButtonHolder.ScrollingFrame
 	local Blatant = ScrollingFrame.Blatant
@@ -655,33 +655,33 @@ local function main() -- ButtonHolder.Manager
 	local cred = DodgeballGui:FindFirstChild("Credits")
 	local OriginalPosition = MainFrame.Position
 	local TextInputYOffset = 0.464
-	
+
 	-- highlight for mouse hover
 	local Highlight = Instance.new("Highlight")
 	Highlight.FillColor = Color3.fromRGB(8, 82, 255)
 	Highlight.OutlineColor = Color3.fromRGB(6, 180, 255)
-	
+
 	-- in case gui's parent is playergui
 	if MainFrame.Parent.Parent ~= CoreGui and pcall(tostring, CoreGui) then
 		MainFrame.Parent.Parent = CoreGui
 	end
 	cred.Visible = true
-	
+
 	coroutine.wrap(function() -- drag
 		local frame = MainFrame
 		local dragToggle = nil
 		local dragStart = nil
 		local startPos = nil
-	
+
 		local function updateInput(input)
 			local delta = input.Position - dragStart
 			MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
 				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-			
+
 			-- align textinput to be below mainframe as well
 			TextInput.Position = MainFrame.Position + UDim2.fromScale(0, TextInputYOffset)
 		end
-	
+
 		frame.Title.InputBegan:Connect(function(input)
 			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
 				dragToggle = true
@@ -694,7 +694,7 @@ local function main() -- ButtonHolder.Manager
 				end)
 			end
 		end)
-	
+
 		UserInputService.InputChanged:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 				if dragToggle then
@@ -703,14 +703,14 @@ local function main() -- ButtonHolder.Manager
 			end
 		end)
 	end)()
-	
+
 	local function createSound(name, id)
 		local sound = Instance.new("Sound", Sounds)
 		sound.Name = name
 		sound.Volume = 4
 		sound.SoundId = id
 	end
-	
+
 	if #Sounds:GetChildren() == 0 then -- gui2lua does not support sounds
 		createSound("Land", "rbxassetid://268933974")
 		createSound("S_AntiHit", "rbxassetid://5153733046")
@@ -719,9 +719,9 @@ local function main() -- ButtonHolder.Manager
 		createSound("Click", "rbxassetid://4499400560")
 		createSound("Notification", "rbxassetid://17208361335")
 	end
-	
+
 	Sounds.Land:Play()
-	
+
 	local AimbotEnabled = false
 	local FarmThrowsEnabled = false
 	local HoverKillEnabled = false
@@ -730,11 +730,11 @@ local function main() -- ButtonHolder.Manager
 	local ProtectAlliesEnabled = false
 	local AntiTransferEnabled = false
 	local NotifyOfCertzChange = false
-	
+
 	local Character = (LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait())
 	task.wait()
 	local Root = (Character and Character:FindFirstChild("HumanoidRootPart"))
-	
+
 	local RootConn = Root.DescendantAdded:Connect(function(ins)
 		if AntiTransferEnabled and ins:IsA("BodyPosition") then
 			local a = 0
@@ -743,11 +743,11 @@ local function main() -- ButtonHolder.Manager
 			repeat ins:Destroy() a += 1 until a > 3
 		end
 	end)
-	
+
 	LocalPlayer.CharacterRemoving:Connect(function()
 		Character = nil
 		Root = nil
-		
+
 		RootConn:Disconnect()
 		RootConn = nil
 	end)
@@ -755,7 +755,7 @@ local function main() -- ButtonHolder.Manager
 		Character = new
 		repeat task.wait() until Character:FindFirstChild("HumanoidRootPart")
 		Root = Character:FindFirstChild("HumanoidRootPart")
-		
+
 		RootConn = Root.DescendantAdded:Connect(function(ins)
 			if AntiTransferEnabled and ins:IsA("BodyPosition") then
 				local a = 0
@@ -765,22 +765,22 @@ local function main() -- ButtonHolder.Manager
 			end
 		end)
 	end)
-	
+
 	local function checkroot() -- repeat task.wait() until checkroot()
 		return Root ~= nil
 	end
-	
+
 	local HoverCallback = nil;
-	
+
 	local MouseHoverConn = Mouse.Move:Connect(function()
 		if not HoverCallback then return end
-		
+
 		local Target = Mouse.Target
 		local plrTarget;
-		
+
 		if Target then
 			local Model = Target.Parent
-			
+
 			if Model.ClassName ~= "Model" then
 				repeat Model = Model.Parent until Model.ClassName == "Model" or Model.Parent == nil
 				if Model.Parent == nil then
@@ -788,14 +788,14 @@ local function main() -- ButtonHolder.Manager
 					return
 				end
 			end
-			
+
 			for i, plr in pairs(Players:GetPlayers()) do
 				if Target.Parent == plr.Character and not plr.Character:FindFirstChildWhichIsA("Highlight") then
 					plrTarget = plr
 					break
 				end
 			end
-			plrTarget = LocalPlayer
+
 			if not plrTarget then
 				Highlight.Parent = nil
 				return
@@ -803,14 +803,14 @@ local function main() -- ButtonHolder.Manager
 		else
 			return
 		end
-		
+
 		Highlight.Parent = plrTarget.Character
 	end)
-	
+
 	local MouseClickConn = Mouse.Button1Up:Connect(function()
 		if not HoverCallback then return end
 		local plrTarget = Players:GetPlayerFromCharacter(Highlight.Parent)
-		
+
 		if plrTarget then
 			Sounds.DEFAULT:Play()
 			HoverCallback(plrTarget)
@@ -821,28 +821,28 @@ local function main() -- ButtonHolder.Manager
 			Highlight.OutlineColor = Color3.fromRGB(6, 180, 255)
 		end
 	end)
-	
+
 	-- credits
 	task.spawn(function()
 		task.wait(2.5)
-		
+
 		for i = 1, 40 do
 			cred.TextTransparency = i/40
 			cred.Credits.TextTransparency = i/40
 			task.wait()
 		end
-		
+
 		cred:Destroy()
 	end)
-	
+
 	local OldCertz = CertzIntValue.Value
-	
+
 	local function SetNotif(title, text)
 		local Notif = NotificationSample:Clone()
-	
+
 		-- Set the starting position of the new notification
 		Notif.Position = UDim2.new(0.8, 0, 0.75, 0)
-	
+
 		-- Add the notification and set its name based on the current number of notifications
 		local notifCount = #NotificationFolder:GetChildren() + 1
 		Notif.Name = "Notification" .. notifCount
@@ -850,61 +850,61 @@ local function main() -- ButtonHolder.Manager
 		Notif.Visible = true
 		Notif.Title.Text = title
 		Notif.Text.Text = text
-	
+
 		-- Reposition existing notifications to make room for the new one
 		for i, existingNotif in ipairs(NotificationFolder:GetChildren()) do
 			existingNotif.Position = UDim2.new(0.8, 0, 0.75 - (0.25 * (i - 1)), 0)
 		end
-	
+
 		if notifCount >= 3 then
 			local oldestNotif = NotificationFolder:FindFirstChild("Notification1")
 			if oldestNotif then
 				oldestNotif:Destroy()
 			end
 		end
-		
+
 		Sounds.Notification:Play()
-	
+
 		-- Delay and then animate the notification disappearing
 		task.delay(3, function()
 			if not Notif then return end
-	
+
 			for i = .8, 2, .02 do
 				Notif.Position = UDim2.fromScale(i, Notif.Position.Y.Scale)
 				task.wait()
 			end
-	
+
 			Notif:Destroy()
 		end)
-		
+
 		return false
 	end
-	
+
 	CertzIntValue:GetPropertyChangedSignal("Value"):Connect(function()
 		if NotifyOfCertzChange then
 			SetNotif("Certz Notification", "You gained: " .. tostring(CertzIntValue.Value-OldCertz) .. " certz")
 		end
 		OldCertz = CertzIntValue.Value
 	end)
-	
+
 	local function SetVisibleButtons(f)
 		if f:FindFirstChildWhichIsA("TextButton").Visible then return end
-		
+
 		for _, otherbutton in pairs(ScrollingFrame:GetDescendants()) do
 			if otherbutton:IsA("TextButton") and otherbutton.Parent ~= f then
 				otherbutton.Visible = false
 			end
 		end
-		
+
 		for _, button in pairs(f:GetChildren()) do
 			if button:IsA("TextButton") then
 				button.Visible = true
 			end
 		end
-	
+
 		ScrollingFrame.Title.Text = "Currently Viewing: " .. f.Name
 	end
-	
+
 	for i, v in pairs(Left:GetChildren()) do
 		if v:IsA("TextButton") and v.Name ~= "Realign" then
 			v.MouseButton1Click:Connect(function()
@@ -912,76 +912,76 @@ local function main() -- ButtonHolder.Manager
 			end)
 		end
 	end
-	
+
 	Realign.MouseButton1Click:Connect(function()
 		MainFrame.Position = OriginalPosition
 	end)
-	
+
 	local function IsGameAlive()
 		return TimeLeftIntValue.Value ~= 0
 	end
-	
+
 	local function GetMagnitudeDifference(p1, p2)
 		local mag1, mag2 = p1.Position.Magnitude, p2.Position.Magnitude
 		return math.abs(mag1 - mag2)
 	end
-	
+
 	local function Reset()
 		pcall(function() LocalPlayer.Character.Humanoid.Health = 0 end)
 		return LocalPlayer.CharacterAdded:Wait()
 	end
-	
+
 	local function IsInGame(plr)
 		local char = (plr or LocalPlayer).Character
 		if not (char and char:FindFirstChildWhichIsA("Humanoid")) or char:FindFirstChildWhichIsA("Humanoid").Health == 0 then return false end
 		return char:FindFirstChild("EnemyArrow") ~= nil
 	end
-	
+
 	local function IsEnemy(plr)
 		return IsInGame(plr) and plr.Team ~= LocalPlayer.Team
 	end
-	
+
 	local function IsAlly(plr)
 		return IsInGame(plr) and plr.Team == LocalPlayer.Team
 	end
-	
+
 	local function GetAllies()
 		local tbl = {}
-	
+
 		for i, v in pairs(Players:GetPlayers()) do
 			if IsAlly(v) then
 				table.insert(tbl, v)
 			end
 		end
-	
+
 		return tbl
 	end
-	
+
 	local function GetEnemies()
 		local tbl = {}
-	
+
 		for i, v in pairs(Players:GetPlayers()) do
 			if IsEnemy(v) then
 				table.insert(tbl, v)
 			end
 		end
-	
+
 		return tbl
 	end
-	
+
 	local function GetRandomAlly()
 		return GetAllies()[math.random(#GetAllies() ~= 0 and #GetAllies() or 1)]
 	end
-	
+
 	local function GetRandomEnemy()
 		return GetEnemies()[math.random(#GetEnemies() ~= 0 and #GetEnemies() or 1)]
 	end
-	
+
 	local function GetBalls()
 		if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
 		if not IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer is not in the game") end
 		local dub = 0
-	
+
 		for i, v in pairs(workspace:GetChildren()) do
 			if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(196, 40, 28) then
 				dub += 1
@@ -991,37 +991,37 @@ local function main() -- ButtonHolder.Manager
 			end
 		end
 	end
-	
+
 	local function Kill(plr)
 		if not plr then return SetNotif("Failed to Load", "No Player") end
 		if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
 		if not IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer is not in the game") end
 		if not IsEnemy(plr) then return SetNotif("Failed to Load", "Player to kill is not an enemy or not in the game") end
-	
+
 		repeat
 			if math.random(5) == 5 then
 				GetBalls()
 			end
-	
+
 			pcall(function()
 				local direction = plr.Character.Humanoid.MoveDirection
 				local startingPos = plr.Character.HumanoidRootPart.Position
-	
+
 				Connection:InvokeServer(1, LocalPlayer.Character.Dodgeball.Handle.Ref.Value, direction, startingPos)
 				Connection:InvokeServer(28, LocalPlayer.Character.Dodgeball)
 			end)
-	
+
 			task.wait()
 		until (not plr.Character) or plr.Character:FindFirstChildWhichIsA("Humanoid").Health == 0 or not IsInGame(plr)
 	end
-	
+
 	local function Protect(plr)
 		if not plr then return SetNotif("Failed to Load", "No Player") end
 		if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
 		if IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer must not be in the game for Protect to work") end
 		if not IsInGame(plr) then return SetNotif("Failed to Load", "Player to protect is not in the game") end
 		if IsEnemy(plr) then return SetNotif("Failed to Load", "Player to protect is an enemy, so protect will not work as intended") end
-	
+
 		local conn = RunService.Stepped:Connect(function()
 			pcall(function()
 				for i, v in pairs(LocalPlayer.Character:GetChildren()) do
@@ -1031,7 +1031,7 @@ local function main() -- ButtonHolder.Manager
 				end
 			end)
 		end)
-	
+
 		while IsInGame(plr) and task.wait() do
 			pcall(function()
 				for i, v in pairs(workspace:GetChildren()) do
@@ -1046,16 +1046,16 @@ local function main() -- ButtonHolder.Manager
 					Vector3.new((math.random(2)==2 and 7 or -7), 0, (math.random(2)==2 and 7 or -7))
 			end)
 		end
-	
+
 		workspace.CurrentCamera.CameraSubject = LocalPlayer.Character.Humanoid
 		conn:Disconnect()
 		conn = nil
 	end
-	
+
 	local function ProtectAllies()
 		if IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer must not be in the game for ProtectAllies to work") end
 		if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
-	
+
 		while #GetAllies() > 0 and ProtectAlliesEnabled and task.wait() do
 			pcall(function()
 				for i, v in pairs(workspace:GetChildren()) do
@@ -1066,31 +1066,31 @@ local function main() -- ButtonHolder.Manager
 			end)
 		end
 	end
-	
+
 	local function SpawnBalls()
 		if not IsInGame(LocalPlayer) or ((not Character) or not Character:FindFirstChild("Humanoid")) then return SetNotif("Failed to Load", "LocalPlayer must be in the game for SpawnBalls to work") end
-	
+
 		while IsInGame(LocalPlayer) and FarmThrowsEnabled do
 			if math.random(4) == 4 then
 				GetBalls()
 			end
-	
+
 			pcall(function()
 				local startingPos = Root.Position+Vector3.new(0, 5, 0)
-	
+
 				Connection:InvokeServer(1, Character.Dodgeball.Handle.Ref.Value, Vector3.new(math.random(-1,1),math.random(),math.random(-1,1)), startingPos)
 				Connection:InvokeServer(28, Character.Dodgeball)
 			end)
-	
+
 			task.wait()
 		end
 	end
-	
+
 	local function Fling(plr)
 		if not plr then return SetNotif("Failed to Load", "No Player") end
 		repeat task.wait() until checkroot()
 		if not (plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")) then return SetNotif("Failed to Load", "Player character to fling is nil") end
-	
+
 		local OldCFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
 		local counter = 0
 		-- ripped directly from infinite yield, not very consistent
@@ -1100,7 +1100,7 @@ local function main() -- ButtonHolder.Manager
 		bambam.AngularVelocity = Vector3.new(0,99999,0)
 		bambam.MaxTorque = Vector3.new(0,math.huge,0)
 		bambam.P = math.huge
-	
+
 		repeat
 			pcall(function()
 				local Root = LocalPlayer.Character.HumanoidRootPart
@@ -1123,32 +1123,32 @@ local function main() -- ButtonHolder.Manager
 			counter += 1
 			task.wait()
 		until counter > 150 or not (plr.Character and plr.Character:FindFirstChild("HumanoidRootPart"))
-	
+
 		LocalPlayer.Character.HumanoidRootPart.CFrame = OldCFrame
 		bambam:Destroy()
 	end
-	
+
 	local thing, temp;
-	
+
 	local function RevealTextInput(name, callback)
 		if name == nil or callback == nil then
 			TextInput.Visible = false
 			return
 		end
-		
+
 		TextInput.Visible = true
 		TextInput.Title.Text = "Set your " .. name .. " here:"
-		
+
 		if thing then thing:Disconnect() thing = nil end
 		if temp then temp:Disconnect() temp = nil end
-		
+
 		thing = TextInput.TextBox.Focused:Connect(function()
 			temp = TextInput.TextBox.FocusLost:Connect(function(enterPressed)
 				if enterPressed and TextInput.TextBox.Text ~= "" then
 					callback(TextInput.TextBox.Text)
 					TextInput.TextBox.Text = "" -- reset
 					RevealTextInput() -- will make the frame invisible
-					
+
 					thing:Disconnect()
 					temp:Disconnect()
 					thing = nil
@@ -1157,25 +1157,25 @@ local function main() -- ButtonHolder.Manager
 			end)
 		end)
 	end
-	
+
 	local function SwitchButtonText(button, bool)
 		local new = bool and ": ON" or ": OFF"
 		button.Text = string.gsub(button.Text, ": ON", new)
 		button.Text = string.gsub(button.Text, ": OFF", new)
 	end
-	
+
 	local Predict = false
-	
+
 	task.spawn(function() -- ball pathway prediction
 		local Host = Instance.new("Folder", workspace)
 		Host.Name = "Pathways"
-	
+
 		task.spawn(function()
 			while task.wait(30) do -- so things dont bug out a lot
 				Host:ClearAllChildren()
 			end
 		end)
-	
+
 		local function Prediction(cl)
 			local Path = Instance.new("Part", Host)
 			Path.Name = "TEMP"
@@ -1200,7 +1200,7 @@ local function main() -- ButtonHolder.Manager
 		workspace.ChildAdded:Connect(function(v)
 			if v:IsA("BasePart") and v.Name == "Handle" and v.Color ~= Color3.fromRGB(196, 40, 28) then
 				repeat task.wait() until v:FindFirstChild("Owner") and (v:FindFirstChild("Owner").Value ~= nil and v:FindFirstChild("Owner").Value ~= "")
-	
+
 				if Predict and IsEnemy(v:FindFirstChild("Owner").Value) then
 					task.spawn(Prediction, v)
 				end
@@ -1209,14 +1209,14 @@ local function main() -- ButtonHolder.Manager
 		for i, v in pairs(workspace:GetChildren()) do
 			if v:IsA("BasePart") and v.Name == "Handle" and v.Color ~= Color3.fromRGB(196, 40, 28) then
 				repeat task.wait() until v:FindFirstChild("Owner") and (v:FindFirstChild("Owner").Value ~= nil and v:FindFirstChild("Owner").Value ~= "")
-	
+
 				if Predict and IsEnemy(v:FindFirstChild("Owner").Value) then
 					task.spawn(Prediction, v)
 				end
 			end
 		end
 	end)
-	
+
 	for i, v in pairs(LocalPlayer:GetChildren()) do -- fix boolean values / aimbot
 		if v:IsA("BoolValue") then
 			if v.Name == "Phone" then
@@ -1232,7 +1232,7 @@ local function main() -- ButtonHolder.Manager
 			end
 		end
 	end
-	
+
 	for i, v in pairs(ScrollingFrame:GetDescendants()) do
 		if v:IsA("TextButton") then
 			v.MouseButton1Click:Connect(function()
@@ -1240,7 +1240,7 @@ local function main() -- ButtonHolder.Manager
 			end)
 		end
 	end
-	
+
 	local Blatant_List = {
 		AntiPos = function()
 			AntiTransferEnabled = not AntiTransferEnabled
@@ -1249,7 +1249,7 @@ local function main() -- ButtonHolder.Manager
 		FarmThrows = function()
 			FarmThrowsEnabled = not FarmThrowsEnabled
 			SwitchButtonText(Blatant.FarmThrows, FarmThrowsEnabled)
-			
+
 			if FarmThrowsEnabled then
 				SpawnBalls()
 			end
@@ -1257,66 +1257,75 @@ local function main() -- ButtonHolder.Manager
 		HoverKill = function()
 			HoverKillEnabled = not HoverKillEnabled
 			SwitchButtonText(Blatant.HoverKill, HoverKillEnabled)
-			
+
 			if HoverFlingEnabled then
 				HoverFlingEnabled = false
+				Highlight.Parent = nil
 				SwitchButtonText(Blatant.HoverFling, HoverFlingEnabled)
 			end
 			if HoverProtectEnabled then
 				HoverProtectEnabled = false
+				Highlight.Parent = nil
 				SwitchButtonText(Blatant.HoverProtect, HoverProtectEnabled)
 			end
-			
+
 			if HoverKillEnabled then
 				HoverCallback = Kill
 			elseif HoverCallback == Kill then
 				HoverCallback = nil
+				Highlight.Parent = nil
 			end
 		end,
 		HoverFling = function()
 			HoverFlingEnabled = not HoverFlingEnabled
 			SwitchButtonText(Blatant.HoverFling, HoverFlingEnabled)
-			
+
 			if HoverKillEnabled then
 				HoverKillEnabled = false
+				Highlight.Parent = nil
 				SwitchButtonText(Blatant.HoverKill, HoverKillEnabled)
 			end
 			if HoverProtectEnabled then
 				HoverProtectEnabled = false
+				Highlight.Parent = nil
 				SwitchButtonText(Blatant.HoverProtect, HoverProtectEnabled)
 			end
-			
+
 			if HoverFlingEnabled then
 				HoverCallback = Fling
 			elseif HoverCallback == Fling then
 				HoverCallback = nil
+				Highlight.Parent = nil
 			end
 		end,
 		HoverProtect = function()
 			if IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer must not be in the game for Protect to work") end
 			HoverProtectEnabled = not HoverProtectEnabled
 			SwitchButtonText(Blatant.HoverProtect, HoverProtectEnabled)
-			
+
 			if HoverKillEnabled then
 				HoverKillEnabled = false
+				Highlight.Parent = nil
 				SwitchButtonText(Blatant.HoverKill, HoverKillEnabled)
 			end
 			if HoverFlingEnabled then
 				HoverFlingEnabled = false
+				Highlight.Parent = nil
 				SwitchButtonText(Blatant.HoverFling, HoverFlingEnabled)
 			end
-			
+
 			if HoverProtectEnabled then
 				HoverCallback = Protect
 			elseif HoverCallback == Protect then
 				HoverCallback = nil
+				Highlight.Parent = nil
 			end
 		end,
 		ProtectAllies = function()
 			if IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer must not be in the game for Protect to work") end
-			HoverProtectEnabled = not HoverProtectEnabled
-			SwitchButtonText(Blatant.HoverProtect, HoverProtectEnabled)
-			
+			ProtectAlliesEnabled = not ProtectAlliesEnabled
+			SwitchButtonText(Blatant.ProtectAllies, ProtectAlliesEnabled)
+
 			ProtectAllies()
 		end,
 		RemoveGate = function()
@@ -1329,38 +1338,38 @@ local function main() -- ButtonHolder.Manager
 			Sounds.Disappear:Play()
 		end,
 	}
-	
+
 	local Non_Blatant_List = {
 		Aimbot = function()
 			AimbotEnabled = not AimbotEnabled
 			SwitchButtonText(Non_Blatant.Aimbot, AimbotEnabled)
-			
+
 			LocalPlayer:FindFirstChild("Tablet").Value = AimbotEnabled
 		end,
 		RestockBalls = GetBalls,
 		PathPrediction = function()
 			Predict = not Predict
 			SwitchButtonText(Non_Blatant.PathPrediction, Predict)
-			
+
 			if Character:FindFirstChild("Highlight") then Character:FindFirstChild("Highlight"):Destroy() end
 			if Predict == false then return end
 			repeat task.wait() until checkroot()
-	
+
 			local hl = Instance.new("Highlight", Character)
 			hl.OutlineTransparency = 1
 			hl.FillColor = Color3.fromRGB(0, 0, 255)
 			hl.FillTransparency = 0.2
 			Sounds.S_AntiHit:Play()
-	
+
 			for i = 1, 40 do
 				hl.FillTransparency = (0.2 + (i/40))/1.2
 				task.wait()
 			end
-	
+
 			hl:Destroy()
 		end,
 	}
-	
+
 	local Misc_List = {
 		Rejoin = function()
 			if queue_on_teleport then pcall(queue_on_teleport, game:HttpGet("whatever man.")) end
@@ -1376,7 +1385,7 @@ local function main() -- ButtonHolder.Manager
 		FixCam = function()
 			repeat task.wait() until checkroot()
 			workspace.CurrentCamera:Remove()
-	
+
 			repeat task.wait() until checkroot()
 			Sounds.Land:Play()
 			workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChildWhichIsA('Humanoid')
@@ -1390,7 +1399,7 @@ local function main() -- ButtonHolder.Manager
 			RevealTextInput("WalkSpeed", function(new)
 				if not checkroot() then return SetNotif("Failed to change WalkSpeed", "Character/Humanoid was nil") end
 				if not tonumber(new) then return SetNotif("Failed to change WalkSpeed", "Input could not be converted into a number") end
-				
+
 				Character:FindFirstChildWhichIsA("Humanoid").WalkSpeed = tonumber(new)
 				SetNotif("WalkSpeed Successfully Set", "New WalkSpeed: " .. new)
 			end)
@@ -1399,7 +1408,7 @@ local function main() -- ButtonHolder.Manager
 			RevealTextInput("JumpPower", function(new)
 				if not checkroot() then return SetNotif("Failed to change JumpPower", "Character/Humanoid was nil") end
 				if not tonumber(new) then return SetNotif("Failed to change JumpPower", "Input could not be converted into a number") end
-	
+
 				Character:FindFirstChildWhichIsA("Humanoid").UseJumpPower = true
 				Character:FindFirstChildWhichIsA("Humanoid").JumpPower = tonumber(new)
 				SetNotif("JumpPower Successfully Set", "New JumpPower: " .. new)
@@ -1410,7 +1419,7 @@ local function main() -- ButtonHolder.Manager
 			SwitchButtonText(Misc.NotifyCertz, NotifyOfCertzChange)
 		end,
 	}
-	
+
 	for name, callback in pairs(Non_Blatant_List) do
 		Non_Blatant[name].MouseButton1Click:Connect(callback)
 	end
@@ -1420,19 +1429,19 @@ local function main() -- ButtonHolder.Manager
 	for name, callback in pairs(Misc_List) do
 		Misc[name].MouseButton1Click:Connect(callback)
 	end
-	
+
 	local Title = MainFrame.Title
 	local Mini = Title.Top.Minimize
 	local Exit = Title.Top.Exit
-	
+
 	local minified = false
 	local tempButtonsWereVisible = {}
-	
+
 	Exit.MouseButton1Up:Connect(function()
 		Sounds.Disappear:Play()
 		MainFrame.Parent:Destroy()
 	end)
-	
+
 	Mini.MouseButton1Up:Connect(function()
 		minified = not minified
 		Sounds.Land:Play()
@@ -1441,7 +1450,7 @@ local function main() -- ButtonHolder.Manager
 			Mini.Text = "+"
 			MainFrame.BackgroundTransparency = 1
 			ScrollingFrame.Visible = false
-			
+
 			for i, v in pairs(Left:GetChildren()) do
 				if v:IsA("TextButton") then
 					v.Visible = false
@@ -1452,7 +1461,7 @@ local function main() -- ButtonHolder.Manager
 			Mini.Text = "-"
 			MainFrame.BackgroundTransparency = 0
 			ScrollingFrame.Visible = true
-			
+
 			for i, v in pairs(Left:GetChildren()) do
 				if v:IsA("TextButton") then
 					v.Visible = true
@@ -1460,7 +1469,7 @@ local function main() -- ButtonHolder.Manager
 			end
 		end
 	end)
-	
+
 	SetVisibleButtons(ScrollingFrame.Non_Blatant)
 end
 
