@@ -1032,7 +1032,7 @@ local function main() -- ButtonHolder.Manager
 			end)
 		end)
 
-		while IsInGame(plr) and task.wait() do
+		while IsInGame(plr) and HoverProtectEnabled and task.wait() do
 			pcall(function()
 				for i, v in pairs(workspace:GetChildren()) do
 					if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, plr.Character.HumanoidRootPart) < 20 then
@@ -1122,7 +1122,7 @@ local function main() -- ButtonHolder.Manager
 			end)
 			counter += 1
 			task.wait()
-		until counter > 150 or not (plr.Character and plr.Character:FindFirstChild("HumanoidRootPart"))
+		until counter > 100 or not HoverFlingEnabled or not (plr.Character and plr.Character:FindFirstChild("HumanoidRootPart"))
 
 		LocalPlayer.Character.HumanoidRootPart.CFrame = OldCFrame
 		bambam:Destroy()
