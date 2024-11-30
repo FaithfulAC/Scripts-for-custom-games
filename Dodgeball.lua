@@ -1372,7 +1372,7 @@ local function main() -- ButtonHolder.Manager
 
 	local Misc_List = {
 		Rejoin = function()
-			if queue_on_teleport then pcall(queue_on_teleport, game:HttpGet("whatever man.")) end
+			if queue_on_teleport then pcall(queue_on_teleport, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Scripts-for-custom-games/refs/heads/main/Dodgeball.lua")) end
 			SetNotif("Rejoining...", "")
 			game:GetService("TeleportService"):Teleport(game.PlaceId)
 		end,
