@@ -631,7 +631,7 @@ local function main() -- ButtonHolder.Manager
 	local StarterGui = game:GetService("StarterGui")
 	local UserInputService = game:GetService("UserInputService")
 	local TweenService = game:GetService("TweenService")
-	local LocalPlayer = Players.LocalPlayer
+	local LocalPlayer = Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 	local Mouse = LocalPlayer:GetMouse()
 
 	local Storage = Instance.new("Folder")
@@ -978,7 +978,6 @@ local function main() -- ButtonHolder.Manager
 	end
 
 	local function GetBalls()
-		if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
 		if not IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer is not in the game") end
 		local dub = 0
 
@@ -1344,7 +1343,7 @@ local function main() -- ButtonHolder.Manager
 			AimbotEnabled = not AimbotEnabled
 			SwitchButtonText(Non_Blatant.Aimbot, AimbotEnabled)
 
-			LocalPlayer:FindFirstChild("Tablet").Value = AimbotEnabled
+			LocalPlayer:WaitForChild("Tablet").Value = AimbotEnabled
 		end,
 		RestockBalls = GetBalls,
 		PathPrediction = function()
