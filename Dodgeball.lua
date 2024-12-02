@@ -1934,9 +1934,9 @@ local function main() -- ButtonHolder.Manager
 				if IsInGame(LocalPlayer) then
 					GetBalls()
 					for i, v in pairs(workspace:GetChildren()) do
-						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 20 then
+						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 15 and IsEnemy(v.Owner.Value) then
 							pcall(function()
-								local startingPos = v.Position + v.AssemblyLinearVelocity/Vector3.new(100,100,100)
+								local startingPos = v.Position + v.AssemblyLinearVelocity/Vector3.new(25,50,25)
 								local direction = -v.AssemblyLinearVelocity
 
 								Connection:InvokeServer(1, LocalPlayer.Character.Dodgeball.Handle.Ref.Value, direction, startingPos)
