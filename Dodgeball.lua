@@ -955,7 +955,7 @@ local function main() -- ButtonHolder.Manager
 	bottom.Anchored = true
 	bottom.Name = "Bottom"
 	bottom.Position = Vector3.new(-67, 292.5, -274)
-	bottom.Size = Vector3.new(200, 1, 200)
+	bottom.Size = Vector3.new(300, 1, 300)
 	bottom.Color = Color3.fromRGB(0,0,0)
 	bottom.Transparency = 1
 
@@ -1499,6 +1499,13 @@ local function main() -- ButtonHolder.Manager
 		until counter > 100 or not HoverFlingEnabled or not (plr.Character and plr.Character:FindFirstChild("HumanoidRootPart"))
 
 		LocalPlayer.Character.HumanoidRootPart.CFrame = OldCFrame
+		for i, v in next, Character:GetChildren() do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+				v.Massless = false
+				v.Velocity = Vector3.new(0, 0, 0)
+			end
+		end
 		bambam:Destroy()
 	end
 
@@ -1719,21 +1726,29 @@ local function main() -- ButtonHolder.Manager
 			Kill(GetRandomEnemy())
 		end,
 		FlingRandom = function()
-			Fling(Players:GetPlayers()[math.random(#Players:GetPlayers())])
+			local a = Players:GetPlayers()[math.random(#Players:GetPlayers())]
+			if not (a.Character and a.Character:FindFirstChild("HumanoidRootPart")) or a == LocalPlayer then
+				repeat a = Players:GetPlayers()[math.random(#Players:GetPlayers())] until a ~= LocalPlayer or a.Character and a.Character:FindFirstChild("HumanoidRootPart")
+			end
+
+			Fling(a)
 		end,
 		AntiHit = function()
+			if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
+			if not IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer is not in the game") end
 			AntiHitEnabled = not AntiHitEnabled
 			SwitchButtonText(Blatant.AntiHit, AntiHitEnabled)
 
 			while AntiHitEnabled and task.wait() do
-				if checkroot() then
+				if IsInGame(LocalPlayer) and checkroot() then
 					for i, v in pairs(workspace:GetChildren()) do
-						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and IsEnemy(v.Owner.Value) and GetMagnitudeDifference(v, Root) < 5 then
-							Root.CFrame *= CFrame.new(0, -5, 0)
+						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 7 and IsEnemy(v.Owner.Value) then
+							Root.CFrame *= CFrame.new(0, -6, 0)
 							local temp = Instance.new("Part", OtherStorage)
 							temp.Transparency = 1
 							temp.CanCollide = false
-							temp.CFrame = Root.CFrame * CFrame.new(0, 6, 0)
+							temp.Anchored = true
+							temp.CFrame = Root.CFrame * CFrame.new(0, 7, 0)
 							workspace.CurrentCamera.CameraSubject = temp
 							Root.Anchored = true
 
@@ -1746,7 +1761,7 @@ local function main() -- ButtonHolder.Manager
 								return false
 							end)() == false
 
-							Root.CFrame *= CFrame.new(0, 5, 0)
+							Root.CFrame *= CFrame.new(0, 6, 0)
 							Root.Anchored = false
 							workspace.CurrentCamera.CameraSubject = Character:FindFirstChildWhichIsA("Humanoid")
 							temp:Destroy()
@@ -1999,7 +2014,12 @@ local function main() -- ButtonHolder.Manager
 				if not checkroot() then return SetNotif("Failed to change WalkSpeed", "Character/Humanoid was nil") end
 				if not tonumber(new) then return SetNotif("Failed to change WalkSpeed", "Input could not be converted into a number") end
 
-				Character:FindFirstChildWhichIsA("Humanoid").WalkSpeed = tonumber(new)
+				local h = Character:FindFirstChildWhichIsA("Humanoid")
+				h.WalkSpeed = tonumber(new)
+				h:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+					h.WalkSpeed = tonumber(new)
+				end)
+
 				SetNotif("WalkSpeed Successfully Set", "New WalkSpeed: " .. new)
 			end)
 		end,
@@ -2009,7 +2029,11 @@ local function main() -- ButtonHolder.Manager
 				if not tonumber(new) then return SetNotif("Failed to change JumpPower", "Input could not be converted into a number") end
 
 				Character:FindFirstChildWhichIsA("Humanoid").UseJumpPower = true
-				Character:FindFirstChildWhichIsA("Humanoid").JumpPower = tonumber(new)
+				local h = Character:FindFirstChildWhichIsA("Humanoid")
+				h.JumpPower = tonumber(new)
+				h:GetPropertyChangedSignal("JumpPower"):Connect(function()
+					h.JumpPower = tonumber(new)
+				end)
 				SetNotif("JumpPower Successfully Set", "New JumpPower: " .. new)
 			end)
 		end,
