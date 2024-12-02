@@ -1044,7 +1044,7 @@ local function main() -- ButtonHolder.Manager
 			local method = getnamecallmethod()
 
 			-- huge ash if statement
-			if typeof(self) == "Instance" and self == Connection and method == "InvokeServer" and typeof(int) == "number" then
+			if not checkcaller() and typeof(self) == "Instance" and self == Connection and method == "InvokeServer" and typeof(int) == "number" then
 				if int == 28 and AntiEquipEnabled then
 					return
 				end
@@ -1084,7 +1084,7 @@ local function main() -- ButtonHolder.Manager
 		Root = Character:FindFirstChild("HumanoidRootPart")
 
 		if AutoFixCamEnabled then
-			task.delay(.1, function()
+			task.delay(1, function()
 				workspace.CurrentCamera:Remove()
 				Sounds.Land:Play()
 				workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChildWhichIsA('Humanoid')
@@ -1718,7 +1718,7 @@ local function main() -- ButtonHolder.Manager
 			Kill(GetRandomEnemy())
 		end,
 		FlingRandom = function()
-			Fling(GetRandomEnemy())
+			Fling(Players:GetPlayers()[math.random(#Players:GetPlayers())])
 		end,
 		AntiHit = function()
 			AntiHitEnabled = not AntiHitEnabled
@@ -1727,13 +1727,18 @@ local function main() -- ButtonHolder.Manager
 			while AntiHitEnabled and task.wait() do
 				if checkroot() then
 					for i, v in pairs(workspace:GetChildren()) do
-						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 5 then
+						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and IsEnemy(v.Owner.Value) and GetMagnitudeDifference(v, Root) < 5 then
 							Root.CFrame *= CFrame.new(0, -5, 0)
+							local temp = Instance.new("Part", OtherStorage)
+							temp.Transparency = 1
+							temp.CanCollide = false
+							temp.CFrame = Root.CFrame * CFrame.new(0, 6, 0)
+							workspace.CurrentCamera.CameraSubject = temp
 							Root.Anchored = true
 
 							repeat task.wait(.02) until (not checkroot()) or (function()
 								for i, v in pairs(workspace:GetChildren()) do
-									if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 8 then
+									if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 7 then
 										return true
 									end
 								end
@@ -1742,6 +1747,8 @@ local function main() -- ButtonHolder.Manager
 
 							Root.CFrame *= CFrame.new(0, 5, 0)
 							Root.Anchored = false
+							workspace.CurrentCamera.Subject = Character:FindFirstChildWhichIsA("Humanoid")
+							temp:Destroy()
 						end
 					end
 				end
@@ -1754,7 +1761,7 @@ local function main() -- ButtonHolder.Manager
 			if InvincibilityEnabled then
 				bottom.Transparency = 0
 				for i, v in pairs(OthersModel:GetChildren()) do
-					if v:IsA("BasePart") and v.Material == Enum.Material.Concrete and not v.CanCollide then
+					if v:IsA("BasePart") and v.Material == Enum.Material.Concrete then
 						v.CanCollide = false
 						if v.Transparency == 0 then
 							v.Transparency = 0.69
@@ -1785,13 +1792,11 @@ local function main() -- ButtonHolder.Manager
 		LoopProtectAllies = function()
 			if IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer must not be in the game for [Loop]ProtectAllies to work") end
 			if not IsGameAlive() then return SetNotif("Failed to Load", "Game is not active") end
-
-			if IsInGame(LocalPlayer) then return SetNotif("Failed to Load", "LocalPlayer must not be in the game for Protect to work") end
 			LoopProtectAlliesEnabled = not LoopProtectAlliesEnabled
 			SwitchButtonText(Blatant.LoopProtectAllies, LoopProtectAlliesEnabled)
 
 			if ProtectAlliesEnabled then
-				ProtectAlliesEnabled = not ProtectAlliesEnabled
+				ProtectAlliesEnabled = false
 				SwitchButtonText(Blatant.ProtectAllies, ProtectAlliesEnabled)
 			end
 
@@ -1905,7 +1910,7 @@ local function main() -- ButtonHolder.Manager
 					for i, v in pairs(workspace:GetChildren()) do
 						if v:IsA("BasePart") and v.Name == "Handle" and v.Color == Color3.fromRGB(242, 243, 243) and GetMagnitudeDifference(v, Root) < 20 then
 							pcall(function()
-								local startingPos = v.Position + v.AssemblyLinearVelocity
+								local startingPos = v.Position + v.AssemblyLinearVelocity/Vector3.new(100,100,100)
 								local direction = -v.AssemblyLinearVelocity
 
 								Connection:InvokeServer(1, LocalPlayer.Character.Dodgeball.Handle.Ref.Value, direction, startingPos)
