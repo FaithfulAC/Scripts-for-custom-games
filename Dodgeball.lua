@@ -1084,8 +1084,9 @@ local function main() -- ButtonHolder.Manager
 		Root = Character:FindFirstChild("HumanoidRootPart")
 
 		if AutoFixCamEnabled then
-			task.delay(1, function()
+			task.delay(.1, function()
 				workspace.CurrentCamera:Remove()
+				task.wait(.05)
 				Sounds.Land:Play()
 				workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChildWhichIsA('Humanoid')
 				workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
@@ -1747,7 +1748,7 @@ local function main() -- ButtonHolder.Manager
 
 							Root.CFrame *= CFrame.new(0, 5, 0)
 							Root.Anchored = false
-							workspace.CurrentCamera.Subject = Character:FindFirstChildWhichIsA("Humanoid")
+							workspace.CurrentCamera.CameraSubject = Character:FindFirstChildWhichIsA("Humanoid")
 							temp:Destroy()
 						end
 					end
@@ -1761,7 +1762,7 @@ local function main() -- ButtonHolder.Manager
 			if InvincibilityEnabled then
 				bottom.Transparency = 0
 				for i, v in pairs(OthersModel:GetChildren()) do
-					if v:IsA("BasePart") and v.Material == Enum.Material.Concrete then
+					if v:IsA("BasePart") and (v.Material == Enum.Material.Concrete or v.Material == Enum.Material.SmoothPlastic) then
 						v.CanCollide = false
 						if v.Transparency == 0 then
 							v.Transparency = 0.69
@@ -1772,13 +1773,18 @@ local function main() -- ButtonHolder.Manager
 						v.Parent = Storage
 					end
 				end
+				pcall(function()
+					for i, v in pairs(OthersModel.ArenaCircle_Middle:GetChildren()) do
+						v.CanCollide = false
+					end
+				end)
 			else
 				bottom.Transparency = 1
 				for i, v in pairs(Storage:GetChildren()) do
 					v.Parent = OthersModel
 				end
 				for i, v in pairs(OthersModel:GetChildren()) do
-					if v:IsA("BasePart") and v.Material == Enum.Material.Concrete and not v.CanCollide then
+					if v:IsA("BasePart") and (v.Material == Enum.Material.Concrete or v.Material == Enum.Material.SmoothPlastic) and not v.CanCollide then
 						v.CanCollide = true
 						if v.Transparency == 0.69 then
 							v.Transparency = 0
@@ -1787,6 +1793,11 @@ local function main() -- ButtonHolder.Manager
 						end
 					end
 				end
+				pcall(function()
+					for i, v in pairs(OthersModel.ArenaCircle_Middle:GetChildren()) do
+						v.CanCollide = true
+					end
+				end)
 			end
 		end,
 		LoopProtectAllies = function()
