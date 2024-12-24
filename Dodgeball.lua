@@ -1444,7 +1444,9 @@ local function main() -- ButtonHolder.Manager
 	local function SpawnBalls()
 		if not IsInGame(LocalPlayer) or ((not Character) or not Character:FindFirstChild("Humanoid")) then return SetNotif("Failed to Load", "LocalPlayer must be in the game for SpawnBalls to work") end
 
-		while IsInGame(LocalPlayer) and FarmThrowsEnabled do
+		while FarmThrowsEnabled do
+			if not IsInGame(LocalPlayer) then repeat task.wait(5) until IsInGame(LocalPlayer) end
+			
 			if math.random(4) == 4 then
 				GetBalls()
 			end
